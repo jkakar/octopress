@@ -18,7 +18,7 @@ result = store.find(Account)
 
 Clauses to limit the scope of the query can be passed to find.
 Finding all accounts owned by Vince Offer, the equivalent of `SELECT *
-FROM account WHERE owner = ‘Vince Offer’`, is also simple:
+FROM account WHERE owner = ‘Vince Offer'`, is also simple:
 
 ``` python
 result = store.find(Account, Account.owner == "Vince Offer")
@@ -32,14 +32,14 @@ result1 = store.find(Account)
 result2 = result1.find(Account.owner == "Vince Offer")
 ```
 
-Storm doesn’t run a query until you do something with the result, so
+Storm doesn't run a query until you do something with the result, so
 the impact on the database is exactly the same as in the previous
 example.  This is the simplest form of what
 [Jonathan](http://code.mumak.net/) and I have been calling the
 collection pattern.  The basic idea is that you start with a
 collection of all objects, and then refine it, until you have the
 collection you want.  This pattern is possible using pure Storm, as
-shown above, but we’ve found it useful to implement objects that hide
+shown above, but we've found it useful to implement objects that hide
 this logic and provide a more user friendly API.  For example, an
 `AccountCollection` would provide filtering logic as named methods:
 
@@ -63,7 +63,7 @@ class AccountCollection(object):
 ```
 
 Each filtering method, such as `owned_by and has_unpaid_invoices`
-returns a new `AccountCollection` instance.  This isn’t strictly
+returns a new `AccountCollection` instance.  This isn't strictly
 necessary but creating a new instance is both easier to understand and
 implement.  Finding all accounts owned by `Vince Offer` that have unpaid
 invoices is quite easy:
@@ -87,10 +87,10 @@ This pattern provides several benefits:
   All users of the collection benefit from optimizations.
 
 - It creates a clean separation between finding data and using it.
-  This helps keep application logic more focused, because it isn’t
+  This helps keep application logic more focused, because it isn't
   intermingled with the particulars of generating queries.
 
-We’ve used this pattern to good effect in both
+We've used this pattern to good effect in both
 [Landscape](https://landscape.canonical.com/) and
-[Launchpad](https://launchpad.net/).  In a future post I’ll talk about
-some different strategies we’ve used to implement the pattern.
+[Launchpad](https://launchpad.net/).  In a future post I'll talk about
+some different strategies we've used to implement the pattern.

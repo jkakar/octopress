@@ -23,10 +23,10 @@ in which it was created.  The
 detailed information about the changes along with links to the MD5 sum
 and GPG signature for the
 [tarball](http://edge.launchpad.net/storm/trunk/0.17/+download/storm-0.17.tar.bz2).
-I’ve also built official packages for Ubuntu users, available in the
+I've also built official packages for Ubuntu users, available in the
 [Storm PPA](https://launchpad.net/~storm/+archive/ppa).
 
-We’re always interested in hearing about your experiences with Storm.
+We're always interested in hearing about your experiences with Storm.
 If you have comments or questions please feel free to hop into
 `#storm` on Freenode and talk to us, or post a message on the
 [mailing list](https://lists.canonical.com/mailman/listinfo/storm).

@@ -6,5 +6,5 @@ comments: false
 categories:
 ---
 
-For some time I’ve wanted a place to write about nerd-related things.
+For some time I've wanted a place to write about nerd-related things.
 This blog is the designated space for that kind of thing.

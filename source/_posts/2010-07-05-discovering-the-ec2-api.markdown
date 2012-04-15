@@ -6,20 +6,20 @@ comments: false
 categories: cloud
 ---
 
-I’ve been using the EC2 API quite a lot lately, while working on the
+I've been using the EC2 API quite a lot lately, while working on the
 [Landscape](https://landscape.canonical.com/) project.  The
 [API documentation](http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/)
 is excellent, but I want to know how it behaves when things go wrong.
 What kind of failure is produced when I forget to pass a parameter?
 What happens when I pass a bogus parameter?  How does it behave when I
-pass numbered parameters that aren’t in sequence, like
-`Name.7=foo&Name.42=bar`? How does Amazon’s implementation differ from
+pass numbered parameters that aren't in sequence, like
+`Name.7=foo&Name.42=bar`? How does Amazon's implementation differ from
 [Eucalyptus](http://eucalyptus.com/) or [Nova](http://novacc.org/)?
 
-I couldn’t find the answers I wanted in the documentation so I wrote a
+I couldn't find the answers I wanted in the documentation so I wrote a
 simple tool to invoke a method with an arbitrary set of parameters
 against an EC2 API endpoint.  After sending the request, it prints the
-HTTP status code and response to the screen.  It’s called
+HTTP status code and response to the screen.  It's called
 `txaws-discover` and is part of the
 [txAWS](https://launchpad.net/txaws) project.  For example, to run the
 `DescribeRegions` method simply provide credentials, an endpoint, the
@@ -65,5 +65,5 @@ With those defined, the command above can be shortened:
 txaws-discover --action DescribeRegions --RegionName.0 us-west-1
 ```
 
-It’s in [lp:txaws](https://code.launchpad.net/~txaws-dev/txaws/trunk)
+It's in [lp:txaws](https://code.launchpad.net/~txaws-dev/txaws/trunk)
 and has proven to be very helpful as a learning tool.
