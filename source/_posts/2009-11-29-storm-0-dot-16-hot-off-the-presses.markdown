@@ -7,7 +7,7 @@ categories: storm
 ---
 
 Yesterday I released version 0.16 of
-[Storm](http://launchpad.net/storm).  This release fixes some memory
+[Storm](http://storm.canonical.com/).  This release fixes some memory
 leaks and introduces a handful of new features.  The number of changes
 since 0.15 aren’t vast, but we’re trying to get into the habit of
 releasing regularly, so hopefully this will become a trend. The
@@ -29,4 +29,4 @@ now, adding the `site-packages` path to `sys.path` or including it in
 We’re always interested in hearing about your experiences with Storm.
 If you have comments or questions please feel free to hop into
 `#storm` on Freenode and chat us up, or post a message to the
-[mailing list](mailto://storm@lists.canonical.com).
+[mailing list](https://lists.canonical.com/mailman/listinfo/storm).
