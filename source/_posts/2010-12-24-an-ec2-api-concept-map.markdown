@@ -13,6 +13,6 @@ various artefacts involved in the
 [EC2 API](http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/).
 It's not entirely complete, but it does capture the most important
 aspects of the model.  I find it useful as a high-level diagram,
-hopefull you will too.
+hopefully you will too.
 
 [{% img /images/ec2-concept-map.png %}](/images/ec2-concept-map.png)
