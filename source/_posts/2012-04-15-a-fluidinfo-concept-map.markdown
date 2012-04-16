@@ -6,7 +6,7 @@ comments: true
 categories: fluidinfo
 ---
 
-It's been a long while since I posted.  A lot has happened!  A litte
+It's been a long while since I posted and a lot has happened!  A litte
 more than a year ago I left [Canonical](http://canonical.com) and
 joined [Fluidinfo](http://fluidinfo.com/).  Fluidinfo is a shared
 openly-writable metadata storage platform, often referred to as a
