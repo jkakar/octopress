@@ -2,7 +2,7 @@
 layout: post
 title: "An EC2 API concept map"
 date: 2010-12-24 12:25
-comments: false
+comments: true
 categories: cloud
 ---
 

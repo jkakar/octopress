@@ -2,7 +2,7 @@
 layout: post
 title: "Introducing Commandant"
 date: 2010-06-12 12:25
-comments: false
+comments: true
 categories: commandant
 ---
 

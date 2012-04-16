@@ -2,7 +2,7 @@
 layout: post
 title: "Storm 0.16 hot off the presses!"
 date: 2009-11-29 12:01
-comments: false
+comments: true
 categories: storm
 ---
 

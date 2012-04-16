@@ -2,7 +2,7 @@
 layout: post
 title: "Beautiful emacs configuration"
 date: 2010-10-03 12:25
-comments: false
+comments: true
 categories: emacs
 ---
 

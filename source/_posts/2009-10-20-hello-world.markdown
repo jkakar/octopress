@@ -2,7 +2,7 @@
 layout: post
 title: "Hello, world!"
 date: 2009-10-09 10:58
-comments: false
+comments: true
 categories:
 ---
 

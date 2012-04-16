@@ -2,7 +2,7 @@
 layout: post
 title: "Using SQL functions with Storm"
 date: 2010-04-08 12:25
-comments: false
+comments: true
 categories: storm
 ---
 

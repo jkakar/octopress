@@ -2,7 +2,7 @@
 layout: post
 title: "Talking about Storm"
 date: 2009-12-02 12:14
-comments: false
+comments: true
 categories: storm
 ---
 

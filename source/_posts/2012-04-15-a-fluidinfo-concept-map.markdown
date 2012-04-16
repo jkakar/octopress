@@ -2,7 +2,7 @@
 layout: post
 title: "A Fluidinfo concept map"
 date: 2012-04-15 14:59
-comments: false
+comments: true
 categories: fluidinfo
 ---
 

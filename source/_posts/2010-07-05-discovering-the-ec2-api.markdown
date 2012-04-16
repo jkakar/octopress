@@ -2,7 +2,7 @@
 layout: post
 title: "Discovering the EC2 API"
 date: 2010-07-05 12:25
-comments: false
+comments: true
 categories: cloud
 ---
 

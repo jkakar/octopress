@@ -2,7 +2,7 @@
 layout: post
 title: "My work at Canonical"
 date: 2010-09-27 12:25
-comments: false
+comments: true
 categories: canonical
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: "Storm 0.17 is out in the world!"
 date: 2010-08-06 12:25
-comments: false
+comments: true
 categories: storm
 ---
 

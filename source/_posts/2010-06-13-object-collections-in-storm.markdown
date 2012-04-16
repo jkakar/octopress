@@ -2,7 +2,7 @@
 layout: post
 title: "Object collections in Storm"
 date: 2010-06-13 12:25
-comments: false
+comments: true
 categories: storm
 ---
 
