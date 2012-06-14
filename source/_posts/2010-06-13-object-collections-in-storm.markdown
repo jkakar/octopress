@@ -62,7 +62,7 @@ class AccountCollection(object):
         """Get a result set of matching accounts."""
 ```
 
-Each filtering method, such as `owned_by and has_unpaid_invoices`
+Each filtering method, such as `owned_by` and `has_unpaid_invoices`
 returns a new `AccountCollection` instance.  This isn't strictly
 necessary but creating a new instance is both easier to understand and
 implement.  Finding all accounts owned by `Vince Offer` that have unpaid
