@@ -1,14 +1,14 @@
 ---
 layout: post
-title: "Cleaning merged branches with Git"
+title: "Deleting merged branches with Git"
 date: 2012-07-18 15:41
 comments: true
 categories: git scripts
 ---
 
 My friend and colleague at Fluidinfo,
-[Manuel Cerón](https://twitter.com/ceronman), gave me this script he
-wrote to remove merged branches from local and remote Git
+[Manuel Cerón](https://twitter.com/ceronman), gave me this script that
+he wrote to remove merged branches from local and remote Git
 repositories.  Removing branches after merging is one of those fairly
 painless housekeeping tasks that doesn't create a great deal of
 friction, which makes it easy to avoid automating, but it wastes a lot
@@ -35,13 +35,16 @@ do
 done
 ```
 
-You can wire it up as a `cleanbranches` command by adding the
-following to your `~/.gitconfig` file:
+It's avilable in this [gist](https://gist.github.com/3139743).  You
+can wire it up as a `cleanbranches` command by adding the following to
+your `~/.gitconfig` file:
 
 ```
 [alias]
     cleanbranches = !/home/jkakar/bin/gitcleanbranches.sh
 ```
 
-It's a simple thing, but one of those simple things that makes a nice
-difference.
+Now you can run `git cleanbranches` in any repository and local and
+remote branches that have already been merged will be deleted
+automatically.  It's a simple thing, but one of those simple things
+that makes a nice difference in the daily workflow.
