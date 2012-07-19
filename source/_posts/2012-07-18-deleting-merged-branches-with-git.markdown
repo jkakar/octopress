@@ -23,7 +23,7 @@ set -x
 git checkout master
 git pull upstream master
 
-# Synchronize the remove repository.
+# Synchronize the remote repository.
 git push origin master
 
 # Find all merged branches and delete them in the local and remote
