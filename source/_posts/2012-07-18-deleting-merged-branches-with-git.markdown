@@ -35,7 +35,7 @@ do
 done
 ```
 
-It's avilable in this [gist](https://gist.github.com/3139743).  You
+It's available in this [gist](https://gist.github.com/3139743).  You
 can wire it up as a `cleanbranches` command by adding the following to
 your `~/.gitconfig` file:
 
