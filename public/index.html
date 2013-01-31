@@ -181,6 +181,48 @@ that makes a nice difference in the daily workflow.</p>
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/2012/04/18/thinking-about-process/">Thinking about process</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-18T11:08:00-07:00" pubdate data-updated="true">Apr 18<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/04/18/thinking-about-process/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>&#8220;It&#8217;s called an approach.  How you do what you do is almost as
+important as what you do because without the how you diminish the
+what.&#8221;</p>
+
+<p>-Freddie Gruber</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/2012/04/15/a-fluidinfo-concept-map/">A Fluidinfo concept map</a></h1>
     
     
@@ -823,94 +865,6 @@ file should get you started.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2010/04/08/using-sql-functions-with-storm/">Using SQL functions with Storm</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2010-04-08T12:25:00-07:00" pubdate data-updated="true">Apr 8<span>th</span>, 2010</time>
-        
-         | <a href="/blog/2010/04/08/using-sql-functions-with-storm/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>People ask me questions about <a href="https://storm.canonical.com/">Storm</a>
-several times a week, and I&#8217;m happy to help where I can, but it would
-be better if the information our users need was easier to find.  Our
-documentation story is weak and, as a result, Storm is harder to
-discover than it ought to be.  If you do run into problems or have
-questions, please hop into <code>#storm</code> on Freenode and we&#8217;ll do our best
-to help you.  I want to improve the documentation situation, but
-finding the time to do so hasn&#8217;t happened yet.  The next best thing is
-to post some helpful hints here.</p>
-
-<p>First, some advice: if you don&#8217;t know what SQL query you want to run,
-using Storm will probably be hard.  When I get asked a question about
-writing a query using Storm I almost always respond with, &#8220;What does
-the query you want to run look like?&#8221; The querying part of Storm is
-essentially just an expression compiler that takes a list of
-expressions and converts them to SQL.  Once you know what end result
-you want, working backwards to figure out the Storm parlance is
-relatively straight forward.</p>
-
-<p>Today I was asked about using
-<a href="http://en.wikipedia.org/wiki/Null_%28SQL%29#COALESCE"><code>COALESCE</code></a>.
-The person asking the question found the
-<a href="http://people.canonical.com/~therve/storm/storm.expr.Coalesce.html"><code>storm.expr.Coalesce</code></a>
-expression but it wasn&#8217;t obvious how to use it.  He knew he wanted to
-run a query like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="k">table</span> <span class="k">WHERE</span> <span class="n">COALESCE</span><span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>With that knowledge, figuring out how to use Storm was quite easy:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="n">store</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="k">Table</span><span class="p">,</span> <span class="n">Coalesce</span><span class="p">(</span><span class="k">Table</span><span class="p">.</span><span class="n">col1</span><span class="p">,</span> <span class="k">Table</span><span class="p">.</span><span class="n">col2</span><span class="p">)</span> <span class="o">==</span> <span class="ss">&quot;foo&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Furthermore, <code>Coalesce</code> is just a helper expression to aid usability
-and readability.  If we didn&#8217;t have a built-in <code>Coalesce</code> expression
-the query could have been written using the generic
-<a href="http://people.canonical.com/~therve/storm/storm.expr.Func.html"><code>storm.expr.Func</code></a>
-expression:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="n">store</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="k">Table</span><span class="p">,</span> <span class="n">Func</span><span class="p">(</span><span class="ss">&quot;COALESCE&quot;</span><span class="p">,</span> <span class="k">Table</span><span class="p">.</span><span class="n">col1</span><span class="p">,</span> <span class="k">Table</span><span class="p">.</span><span class="n">col2</span><span class="p">)</span> <span class="o">==</span> <span class="ss">&quot;foo&quot;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If you want to use a SQL function in a Storm query, and there is no
-built-in expression for it, you can use <code>Func</code> to call it.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -930,6 +884,10 @@ built-in expression for it, you can use <code>Func</code> to call it.</p>
       </li>
     
       <li class="post">
+        <a href="/blog/2012/04/18/thinking-about-process/">Thinking about process</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2012/04/15/a-fluidinfo-concept-map/">A Fluidinfo concept map</a>
       </li>
     
@@ -939,10 +897,6 @@ built-in expression for it, you can use <code>Func</code> to call it.</p>
     
       <li class="post">
         <a href="/blog/2010/10/03/beautiful-emacs-configuration/">Beautiful emacs configuration</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2010/09/27/my-work-at-canonical/">My work at Canonical</a>
       </li>
     
   </ul>

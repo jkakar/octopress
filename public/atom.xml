@@ -4,7 +4,7 @@
   <title><![CDATA[nerding.out()]]></title>
   <link href="http://kakar.ca/atom.xml" rel="self"/>
   <link href="http://kakar.ca/"/>
-  <updated>2013-01-30T17:51:42-08:00</updated>
+  <updated>2013-01-30T17:56:19-08:00</updated>
   <id>http://kakar.ca/</id>
   <author>
     <name><![CDATA[Jamu Kakar]]></name>
@@ -80,6 +80,19 @@ your <code>~/.gitconfig</code> file:</p>
 remote branches that have already been merged will be deleted
 automatically.  It&#8217;s a simple thing, but one of those simple things
 that makes a nice difference in the daily workflow.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Thinking about process]]></title>
+    <link href="http://kakar.ca/blog/2012/04/18/thinking-about-process/"/>
+    <updated>2012-04-18T11:08:00-07:00</updated>
+    <id>http://kakar.ca/blog/2012/04/18/thinking-about-process</id>
+    <content type="html"><![CDATA[<p>&#8220;It&#8217;s called an approach.  How you do what you do is almost as
+important as what you do because without the how you diminish the
+what.&#8221;</p>
+
+<p>-Freddie Gruber</p>
 ]]></content>
   </entry>
   
