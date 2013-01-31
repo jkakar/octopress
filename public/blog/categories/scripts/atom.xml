@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: scripts | nerding.out()]]></title>
+  <link href="http://kakar.ca/blog/categories/scripts/atom.xml" rel="self"/>
+  <link href="http://kakar.ca/"/>
+  <updated>2013-01-30T17:51:42-08:00</updated>
+  <id>http://kakar.ca/</id>
+  <author>
+    <name><![CDATA[Jamu Kakar]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Deleting merged branches with Git]]></title>
+    <link href="http://kakar.ca/blog/2012/07/18/deleting-merged-branches-with-git/"/>
+    <updated>2012-07-18T15:41:00-07:00</updated>
+    <id>http://kakar.ca/blog/2012/07/18/deleting-merged-branches-with-git</id>
+    <content type="html"><![CDATA[<p>My friend and colleague at Fluidinfo,
+<a href="https://twitter.com/ceronman">Manuel Cerón</a>, gave me this script that
+he wrote to remove merged branches from local and remote Git
+repositories.  Removing branches after merging is one of those fairly
+painless housekeeping tasks that doesn't create a great deal of
+friction, which makes it easy to avoid automating, but it wastes a lot
+of time as days and weeks go by.</p>
+
+<p>``` bash</p>
+
+<h1>!/bin/bash</h1>
+
+<p>set -x</p>
+
+<h1>Update the master branch.</h1>
+
+<p>git checkout master
+git pull upstream master</p>
+
+<h1>Synchronize the remote repository.</h1>
+
+<p>git push origin master</p>
+
+<h1>Find all merged branches and delete them in the local and remote</h1>
+
+<h1>repositories.</h1>
+
+<p>for branch in <code>git branch --merged | grep -v '*' | tr -d ' '</code>
+do</p>
+
+<pre><code>git branch -d $branch
+git push origin :$branch
+</code></pre>
+
+<p>done
+```</p>
+
+<p>It's available in this <a href="https://gist.github.com/3139743">gist</a>.  You
+can wire it up as a <code>cleanbranches</code> command by adding the following to
+your <code>~/.gitconfig</code> file:</p>
+
+<p>```
+[alias]</p>
+
+<pre><code>cleanbranches = !/home/jkakar/bin/gitcleanbranches.sh
+</code></pre>
+
+<p>```</p>
+
+<p>Now you can run <code>git cleanbranches</code> in any repository and local and
+remote branches that have already been merged will be deleted
+automatically.  It's a simple thing, but one of those simple things
+that makes a nice difference in the daily workflow.</p>
+]]></content>
+  </entry>
+  
+</feed>

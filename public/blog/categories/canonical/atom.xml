@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: canonical | nerding.out()]]></title>
+  <link href="http://kakar.ca/blog/categories/canonical/atom.xml" rel="self"/>
+  <link href="http://kakar.ca/"/>
+  <updated>2013-01-30T17:51:42-08:00</updated>
+  <id>http://kakar.ca/</id>
+  <author>
+    <name><![CDATA[Jamu Kakar]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[My work at Canonical]]></title>
+    <link href="http://kakar.ca/blog/2010/09/27/my-work-at-canonical/"/>
+    <updated>2010-09-27T12:25:00-07:00</updated>
+    <id>http://kakar.ca/blog/2010/09/27/my-work-at-canonical</id>
+    <content type="html"><![CDATA[<p>A number of folks at <a href="http://www.canonical.com/">Canonical</a> have been
+writing about what we do and how our work contributes to the goal of
+getting free software into the mainstream.  Canonical and
+<a href="http://www.ubuntu.com/">Ubuntu</a> have brought free software to the
+general public in a way that hasn't been done before, in a very short
+span of time.</p>
+
+<p>I've been working on the Landscape Team since early 2006.  I was one
+of the founding members of the project along with
+<a href="http://blog.labix.org/">Gustavo</a> and
+<a href="http://radix.twistedmatrix.com/">Chris</a>.
+<a href="http://www.canonical.com/enterprise-services/ubuntu-advantage/landscape">Landscape</a>
+is a web-based tool that eases the task of managing large deployments
+of Ubuntu.  It is one of the many services that Canonical provides, as
+a value add to Ubuntu, and is proprietary software.  At this point
+you're probably thinking, "How can proprietary software help the goal
+of spreading free software?  That's crazy talk."  Well, in at least
+two ways.</p>
+
+<p>Landscape makes it possible for people that could never have chosen
+Ubuntu to consider it, and in many cases to adopt it.  Our enterprise
+customers look at Ubuntu and they like what it offers, but that's only
+the beginning of the story.  Management is a big concern for
+organizations that roll out tens, hundreds or thousands of Ubuntu
+machines.  Without a management solution, Ubuntu is a non-starter no
+matter how good the user experience.</p>
+
+<p>Landscape is a revenue generator for Canonical and, though we'd all
+love to release it as free software, that revenue is very important.
+It contributes to the sustainability of the company and thus, to the
+sustainability of Ubuntu itself.  We do as much work as we can in the
+open.  For example, <a href="https://storm.canonical.com/">Storm</a>, an object
+relational mapper for Python, was developed by the Landscape Team and
+released as free software.  We've sent patches to projects such as
+<a href="http://twistedmatrix.com/trac/">Twisted</a>,
+<a href="https://launchpad.net/txaws">txAWS</a> and others.</p>
+
+<p>Although my work may be controversial in the wider free software
+community I'm a free software developer at heart.  The effort I put
+into Landscape is good for free software in general.  It helps Ubuntu
+gain adoption in places where it simply wouldn't be considered without
+a tool like Landscape.  Canonical has been, and continues to be, an
+amazing place to work.  It is full of passionate people all doing
+their part to get free software out into the world.</p>
+]]></content>
+  </entry>
+  
+</feed>

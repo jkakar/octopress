@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: commandant | nerding.out()]]></title>
+  <link href="http://kakar.ca/blog/categories/commandant/atom.xml" rel="self"/>
+  <link href="http://kakar.ca/"/>
+  <updated>2013-01-30T17:51:42-08:00</updated>
+  <id>http://kakar.ca/</id>
+  <author>
+    <name><![CDATA[Jamu Kakar]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Introducing Commandant]]></title>
+    <link href="http://kakar.ca/blog/2010/06/12/introducing-commandant/"/>
+    <updated>2010-06-12T12:25:00-07:00</updated>
+    <id>http://kakar.ca/blog/2010/06/12/introducing-commandant</id>
+    <content type="html"><![CDATA[<p>I've been meaning to write about
+<a href="https://launchpad.net/commandant">Commandant</a> for ages.  I started it
+last year because I wanted to write command driven applications with a
+user experience just like <a href="http://bazaar.canonical.com/">Bazaar</a>.
+There are several things that I like about Bazaar's user interface:</p>
+
+<ul>
+<li>You only have to know that the program is called <code>bzr</code> to start
+discovering it, because its default behaviour is to teach you how to
+use the builtin help system.</li>
+<li>Each command has a clear name that makes its purpose easy to discern.</li>
+<li>Each command has a succinct summary and a well written long
+description, along with clear information about the arguments and
+options the command accepts.</li>
+<li>Help topics provide general information about the program that isn't
+command-specific.  The topics describe conceptual and technical
+aspects of the program that help the user better understand how to
+use it.</li>
+<li>The interface conventions are very simple.  It doesn't take long to
+figure out how things work.</li>
+</ul>
+
+
+<p>I wanted, as much as possible, to start writing application logic
+without having to do much work to get a working user interface.  With
+that in mind, the basic goal for Commandant is to provide a
+Bazaar-like user interface with the least effort possible.  I started
+by trying to extend Bazaar but I ran into tricky integration problems
+that made it hard to make progress, so I switched gears and started
+implementing the logic from scratch.  Reinventing the wheel got me
+further than trying to integrate, but I quickly reached a point where
+progress slowed down because I had to deal with tricky problems that
+Bazaar had already solved.  In the meantime,
+<a href="http://rbtcollins.wordpress.com/">Robert</a> landed changes in Bazaar
+that removed the integration hurdles that I'd run into.</p>
+
+<p>With the integration problems out of the way, I stopped wasting time
+reinventing the wheel, and Commandant is now a thin layer on top of
+<code>bzrlib</code> itself.  Being able to take advantage of the work that has
+been done in Bazaar has been a blessing.  There's more that can be done
+to improve Commandant, but it is very usable in its current state.  If
+you're interested in learning more, the
+<a href="http://bazaar.launchpad.net/~jkakar/commandant/trunk/annotate/head:/README">README</a>
+file should get you started.</p>
+]]></content>
+  </entry>
+  
+</feed>

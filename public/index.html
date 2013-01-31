@@ -1,0 +1,1019 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>nerding.out()</title>
+  <meta name="author" content="Jamu Kakar">
+
+  
+  <meta name="description" content="My friend and colleague at Fluidinfo,
+Manuel Cerón, gave me this script that
+he wrote to remove merged branches from local and remote Git &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://kakar.ca/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="nerding.out()" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-34163989-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">nerding.out()</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:kakar.ca" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/07/18/deleting-merged-branches-with-git/">Deleting merged branches with Git</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-18T15:41:00-07:00" pubdate data-updated="true">Jul 18<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/07/18/deleting-merged-branches-with-git/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>My friend and colleague at Fluidinfo,
+<a href="https://twitter.com/ceronman">Manuel Cerón</a>, gave me this script that
+he wrote to remove merged branches from local and remote Git
+repositories.  Removing branches after merging is one of those fairly
+painless housekeeping tasks that doesn&#8217;t create a great deal of
+friction, which makes it easy to avoid automating, but it wastes a lot
+of time as days and weeks go by.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c">#!/bin/bash</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">set</span> -x
+</span><span class='line'>
+</span><span class='line'><span class="c"># Update the master branch.</span>
+</span><span class='line'>git checkout master
+</span><span class='line'>git pull upstream master
+</span><span class='line'>
+</span><span class='line'><span class="c"># Synchronize the remote repository.</span>
+</span><span class='line'>git push origin master
+</span><span class='line'>
+</span><span class='line'><span class="c"># Find all merged branches and delete them in the local and remote</span>
+</span><span class='line'><span class="c"># repositories.</span>
+</span><span class='line'><span class="k">for </span>branch in <span class="sb">`</span>git branch --merged | grep -v <span class="s1">&#39;*&#39;</span> | tr -d <span class="s1">&#39; &#39;</span><span class="sb">`</span>
+</span><span class='line'><span class="k">do</span>
+</span><span class='line'><span class="k">    </span>git branch -d <span class="nv">$branch</span>
+</span><span class='line'>    git push origin :<span class="nv">$branch</span>
+</span><span class='line'><span class="k">done</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It&#8217;s available in this <a href="https://gist.github.com/3139743">gist</a>.  You
+can wire it up as a <code>cleanbranches</code> command by adding the following to
+your <code>~/.gitconfig</code> file:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="o">[</span><span class="nb">alias</span><span class="o">]</span>
+</span><span class='line'>    <span class="nv">cleanbranches</span> <span class="o">=</span> !/home/jkakar/bin/gitcleanbranches.sh
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now you can run <code>git cleanbranches</code> in any repository and local and
+remote branches that have already been merged will be deleted
+automatically.  It&#8217;s a simple thing, but one of those simple things
+that makes a nice difference in the daily workflow.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/04/15/a-fluidinfo-concept-map/">A Fluidinfo concept map</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-04-15T14:59:00-07:00" pubdate data-updated="true">Apr 15<span>th</span>, 2012</time>
+        
+         | <a href="/blog/2012/04/15/a-fluidinfo-concept-map/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>It&#8217;s been a long while since I posted and a lot has happened!  A litte
+more than a year ago I left <a href="http://canonical.com">Canonical</a> and
+joined <a href="http://fluidinfo.com/">Fluidinfo</a>.  Fluidinfo is a shared
+openly-writable metadata storage platform, often referred to as a
+social network for data.  There&#8217;s a lot to say about Fluidinfo, much
+of which is already discussed on the
+<a href="http://blogs.fluidinfo.com/fluidinfo/">Fluidinfo blog</a>, and I plan to
+write more about it in the future.  When I first got involved with
+Fluidinfo I made a concept map to better understand the data model.
+I&#8217;ve been meaning to publish it for ages, so here it is.</p>
+
+<p><a href="/images/fluidinfo-concept-map.png"><img src="/images/fluidinfo-concept-map.png"></a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/12/24/an-ec2-api-concept-map/">An EC2 API concept map</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-12-24T12:25:00-08:00" pubdate data-updated="true">Dec 24<span>th</span>, 2010</time>
+        
+         | <a href="/blog/2010/12/24/an-ec2-api-concept-map/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Earlier this year I was working with Canonical&#8217;s design team.  We were
+putting our heads together to develop a fantastic cloud user
+experience in Landscape.  I created a concept map to help clarify the
+various artefacts involved in the
+<a href="http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/">EC2 API</a>.
+It&#8217;s not entirely complete, but it does capture the most important
+aspects of the model.  I find it useful as a high-level diagram,
+hopefully you will too.</p>
+
+<p><a href="/images/ec2-concept-map.png"><img src="/images/ec2-concept-map.png"></a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/10/03/beautiful-emacs-configuration/">Beautiful emacs configuration</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-10-03T12:25:00-07:00" pubdate data-updated="true">Oct 3<span>rd</span>, 2010</time>
+        
+         | <a href="/blog/2010/10/03/beautiful-emacs-configuration/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><strong>UPDATE</strong> I&#8217;ve moved my emacs configuration to
+<a href="https://github.com/jkakar/emacs-configuration">GitHub</a>.</p>
+
+<p>Some time ago during a sprint, I noticed that
+<a href="https://launchpad.net/~free.ekanayaka">Free Ekanayaka</a>, one of my
+Landscape teammates, had excellent pyflakes/flymake integration that
+dramatically improved the experience of editing Python files in emacs.
+When I asked him about it he kindly offered to share his configuration
+and I was excited to pick out the flymake settings he had.  When I
+actually looked at what he&#8217;d sent me I was blown away.  He has the
+most elegant emacs configuration I&#8217;ve ever seen.  He uses a simple
+pattern composed of individual configuration files, each focused on a
+particular set of customizations such as appearance, interaction,
+programming, etc. that are all wired up to create the final result.
+It&#8217;s very clean and avoids the blob-of-crap problem that most emacs
+configuration suffers from.</p>
+
+<p>This evening I finally took his ideas and refactored them to match my
+emacs setup.  The structure is the same, but the details are, in some
+cases, quite different.  I&#8217;m managing the configuration with Bazaar
+and have pushed it to Launchpad at
+<a href="https://code.edge.launchpad.net/~jkakar/+junk/emacs">lp:~jkakar/+junk/emacs</a>.
+Hopefully others will find this as inspiring as I have.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/09/27/my-work-at-canonical/">My work at Canonical</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-09-27T12:25:00-07:00" pubdate data-updated="true">Sep 27<span>th</span>, 2010</time>
+        
+         | <a href="/blog/2010/09/27/my-work-at-canonical/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A number of folks at <a href="http://www.canonical.com/">Canonical</a> have been
+writing about what we do and how our work contributes to the goal of
+getting free software into the mainstream.  Canonical and
+<a href="http://www.ubuntu.com/">Ubuntu</a> have brought free software to the
+general public in a way that hasn&#8217;t been done before, in a very short
+span of time.</p>
+
+<p>I&#8217;ve been working on the Landscape Team since early 2006.  I was one
+of the founding members of the project along with
+<a href="http://blog.labix.org/">Gustavo</a> and
+<a href="http://radix.twistedmatrix.com/">Chris</a>.
+<a href="http://www.canonical.com/enterprise-services/ubuntu-advantage/landscape">Landscape</a>
+is a web-based tool that eases the task of managing large deployments
+of Ubuntu.  It is one of the many services that Canonical provides, as
+a value add to Ubuntu, and is proprietary software.  At this point
+you&#8217;re probably thinking, &#8220;How can proprietary software help the goal
+of spreading free software?  That&#8217;s crazy talk.&#8221;  Well, in at least
+two ways.</p>
+
+<p>Landscape makes it possible for people that could never have chosen
+Ubuntu to consider it, and in many cases to adopt it.  Our enterprise
+customers look at Ubuntu and they like what it offers, but that&#8217;s only
+the beginning of the story.  Management is a big concern for
+organizations that roll out tens, hundreds or thousands of Ubuntu
+machines.  Without a management solution, Ubuntu is a non-starter no
+matter how good the user experience.</p>
+
+<p>Landscape is a revenue generator for Canonical and, though we&#8217;d all
+love to release it as free software, that revenue is very important.
+It contributes to the sustainability of the company and thus, to the
+sustainability of Ubuntu itself.  We do as much work as we can in the
+open.  For example, <a href="https://storm.canonical.com/">Storm</a>, an object
+relational mapper for Python, was developed by the Landscape Team and
+released as free software.  We&#8217;ve sent patches to projects such as
+<a href="http://twistedmatrix.com/trac/">Twisted</a>,
+<a href="https://launchpad.net/txaws">txAWS</a> and others.</p>
+
+<p>Although my work may be controversial in the wider free software
+community I&#8217;m a free software developer at heart.  The effort I put
+into Landscape is good for free software in general.  It helps Ubuntu
+gain adoption in places where it simply wouldn&#8217;t be considered without
+a tool like Landscape.  Canonical has been, and continues to be, an
+amazing place to work.  It is full of passionate people all doing
+their part to get free software out into the world.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/08/06/storm-0-dot-17-is-out-in-the-world/">Storm 0.17 is out in the world!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-08-06T12:25:00-07:00" pubdate data-updated="true">Aug 6<span>th</span>, 2010</time>
+        
+         | <a href="/blog/2010/08/06/storm-0-dot-17-is-out-in-the-world/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Yesterday I released version 0.17 of
+<a href="http://storm.canonical.com/">Storm</a>.  This release fixes a
+checkpointing bug that could cause coherency issues in certain
+situations involving triggers.  It introduces a handful of new
+features and optimizations including the ability to get a
+<a href="http://people.canonical.com/~therve/storm/storm.expr.Select.html"><code>Select</code></a>
+expression from a
+<a href="http://people.canonical.com/~jkakar/storm/storm.store.ResultSet.html"><code>ResultSet</code></a>,
+which is useful when building a query with a subselect.  It also
+includes safety checks to ensure that a
+<a href="http://people.canonical.com/~therve/storm/storm.store.Store.html"><code>Store</code></a>
+is only used when database access is expected and only from the thread
+in which it was created.  The
+<a href="http://launchpad.net/storm/+milestone/0.17">release notes</a> have
+detailed information about the changes along with links to the MD5 sum
+and GPG signature for the
+<a href="http://edge.launchpad.net/storm/trunk/0.17/+download/storm-0.17.tar.bz2">tarball</a>.
+I&#8217;ve also built official packages for Ubuntu users, available in the
+<a href="https://launchpad.net/~storm/+archive/ppa">Storm PPA</a>.</p>
+
+<p>We&#8217;re always interested in hearing about your experiences with Storm.
+If you have comments or questions please feel free to hop into
+<code>#storm</code> on Freenode and talk to us, or post a message on the
+<a href="https://lists.canonical.com/mailman/listinfo/storm">mailing list</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/07/05/discovering-the-ec2-api/">Discovering the EC2 API</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-07-05T12:25:00-07:00" pubdate data-updated="true">Jul 5<span>th</span>, 2010</time>
+        
+         | <a href="/blog/2010/07/05/discovering-the-ec2-api/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&#8217;ve been using the EC2 API quite a lot lately, while working on the
+<a href="https://landscape.canonical.com/">Landscape</a> project.  The
+<a href="http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/">API documentation</a>
+is excellent, but I want to know how it behaves when things go wrong.
+What kind of failure is produced when I forget to pass a parameter?
+What happens when I pass a bogus parameter?  How does it behave when I
+pass numbered parameters that aren&#8217;t in sequence, like
+<code>Name.7=foo&amp;Name.42=bar</code>? How does Amazon&#8217;s implementation differ from
+<a href="http://eucalyptus.com/">Eucalyptus</a> or <a href="http://novacc.org/">Nova</a>?</p>
+
+<p>I couldn&#8217;t find the answers I wanted in the documentation so I wrote a
+simple tool to invoke a method with an arbitrary set of parameters
+against an EC2 API endpoint.  After sending the request, it prints the
+HTTP status code and response to the screen.  It&#8217;s called
+<code>txaws-discover</code> and is part of the
+<a href="https://launchpad.net/txaws">txAWS</a> project.  For example, to run the
+<code>DescribeRegions</code> method simply provide credentials, an endpoint, the
+method name and whatever parameters you want to pass with it:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>txaws-discover --key NUJOZS2V6RWQUJ3G8JUT <span class="se">\</span>
+</span><span class='line'>    --secret +Ki9Wk5Y4kudFh1EcnB3hthC9PtVU+CcfMJZ4DVl <span class="se">\</span>
+</span><span class='line'>    --endpoint https://ec2.us-east-1.amazonaws.com <span class="se">\</span>
+</span><span class='line'>    --action DescribeRegions <span class="se">\</span>
+</span><span class='line'>    --RegionName.0 us-west-1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This command produces the following output:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>HTTP status code: 200
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;DescribeRegionsResponse</span> <span class="na">xmlns=</span><span class="s">&quot;http://ec2.amazonaws.com/doc/2008-12-01/&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;requestId&gt;</span>1e9beacc-0044-4ad6-bd2c-c615351ae46d<span class="nt">&lt;/requestId&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;regionInfo&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;item&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;regionName&gt;</span>us-west-1<span class="nt">&lt;/regionName&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;regionEndpoint&gt;</span>ec2.us-west-1.amazonaws.com<span class="nt">&lt;/regionEndpoint&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/item&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/regionInfo&gt;</span>
+</span><span class='line'><span class="nt">&lt;/DescribeRegionsResponse&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The credentials and API endpoint can be defined in environment
+variables to make <code>txaws-discover</code> easier to use:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nb">export </span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>NUJOZS2V6RWQUJ3G8JUT
+</span><span class='line'><span class="nb">export </span><span class="nv">AWS_SECRET_ACCESS_KEY</span><span class="o">=</span>+Ki9Wk5Y4kudFh1EcnB3hthC9PtVU+CcfMJZ4DVl
+</span><span class='line'><span class="nb">export </span><span class="nv">AWS_ENDPOINT</span><span class="o">=</span>https://ec2.us-east-1.amazonaws.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With those defined, the command above can be shortened:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>txaws-discover --action DescribeRegions --RegionName.0 us-west-1
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It&#8217;s in <a href="https://code.launchpad.net/~txaws-dev/txaws/trunk">lp:txaws</a>
+and has proven to be very helpful as a learning tool.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/06/13/object-collections-in-storm/">Object collections in Storm</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-06-13T12:25:00-07:00" pubdate data-updated="true">Jun 13<span>th</span>, 2010</time>
+        
+         | <a href="/blog/2010/06/13/object-collections-in-storm/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In <a href="https://storm.canonical.com/">Storm</a>, the
+<a href="http://people.canonical.com/~therve/storm/storm.store.Store.html#find"><code>Store.find</code></a>
+method runs a query and returns matching objects.  Finding all
+accounts in the database, the equivalent of <code>SELECT * FROM account</code>,
+is simple:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">result</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">Account</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Clauses to limit the scope of the query can be passed to find.
+Finding all accounts owned by Vince Offer, the equivalent of <code>SELECT *
+FROM account WHERE owner = ‘Vince Offer'</code>, is also simple:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">result</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">Account</span><span class="p">,</span> <span class="n">Account</span><span class="o">.</span><span class="n">owner</span> <span class="o">==</span> <span class="s">&quot;Vince Offer&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Another way to achieve the same thing is to take the result from the
+first find operation and refine it:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">result1</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">Account</span><span class="p">)</span>
+</span><span class='line'><span class="n">result2</span> <span class="o">=</span> <span class="n">result1</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">Account</span><span class="o">.</span><span class="n">owner</span> <span class="o">==</span> <span class="s">&quot;Vince Offer&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Storm doesn&#8217;t run a query until you do something with the result, so
+the impact on the database is exactly the same as in the previous
+example.  This is the simplest form of what
+<a href="http://code.mumak.net/">Jonathan</a> and I have been calling the
+collection pattern.  The basic idea is that you start with a
+collection of all objects, and then refine it, until you have the
+collection you want.  This pattern is possible using pure Storm, as
+shown above, but we&#8217;ve found it useful to implement objects that hide
+this logic and provide a more user friendly API.  For example, an
+<code>AccountCollection</code> would provide filtering logic as named methods:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">AccountCollection</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">owned_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">salesman</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        Get a new collection with accounts owned by</span>
+</span><span class='line'><span class="sd">        salesman.</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">has_unpaid_invoices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        Get a new collection with accounts that have</span>
+</span><span class='line'><span class="sd">        unpaid invoices.</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;Get a result set of matching accounts.&quot;&quot;&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Each filtering method, such as <code>owned_by</code> and <code>has_unpaid_invoices</code>
+returns a new <code>AccountCollection</code> instance.  This isn&#8217;t strictly
+necessary but creating a new instance is both easier to understand and
+implement.  Finding all accounts owned by <code>Vince Offer</code> that have unpaid
+invoices is quite easy:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">collection1</span> <span class="o">=</span> <span class="n">AccountCollection</span><span class="p">()</span>
+</span><span class='line'><span class="n">collection2</span> <span class="o">=</span> <span class="n">collection1</span><span class="o">.</span><span class="n">owned_by</span><span class="p">(</span><span class="s">&quot;Vince Offer&quot;</span><span class="p">)</span>
+</span><span class='line'><span class="n">collection3</span> <span class="o">=</span> <span class="n">collection2</span><span class="o">.</span><span class="n">has_unpaid_invoices</span><span class="p">()</span>
+</span><span class='line'><span class="n">result</span> <span class="o">=</span> <span class="n">collection3</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This pattern provides several benefits:</p>
+
+<ul>
+<li><p>It names filtering options which makes them easy to understand and
+use.</p></li>
+<li><p>Query building logic is in one place which eliminates duplication.</p></li>
+<li><p>All the criteria used to build a query are available when the query
+is generated, which makes it possible to generate optimized queries.
+All users of the collection benefit from optimizations.</p></li>
+<li><p>It creates a clean separation between finding data and using it.
+This helps keep application logic more focused, because it isn&#8217;t
+intermingled with the particulars of generating queries.</p></li>
+</ul>
+
+
+<p>We&#8217;ve used this pattern to good effect in both
+<a href="https://landscape.canonical.com/">Landscape</a> and
+<a href="https://launchpad.net/">Launchpad</a>.  In a future post I&#8217;ll talk about
+some different strategies we&#8217;ve used to implement the pattern.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/06/12/introducing-commandant/">Introducing Commandant</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-06-12T12:25:00-07:00" pubdate data-updated="true">Jun 12<span>th</span>, 2010</time>
+        
+         | <a href="/blog/2010/06/12/introducing-commandant/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&#8217;ve been meaning to write about
+<a href="https://launchpad.net/commandant">Commandant</a> for ages.  I started it
+last year because I wanted to write command driven applications with a
+user experience just like <a href="http://bazaar.canonical.com/">Bazaar</a>.
+There are several things that I like about Bazaar&#8217;s user interface:</p>
+
+<ul>
+<li>You only have to know that the program is called <code>bzr</code> to start
+discovering it, because its default behaviour is to teach you how to
+use the builtin help system.</li>
+<li>Each command has a clear name that makes its purpose easy to discern.</li>
+<li>Each command has a succinct summary and a well written long
+description, along with clear information about the arguments and
+options the command accepts.</li>
+<li>Help topics provide general information about the program that isn&#8217;t
+command-specific.  The topics describe conceptual and technical
+aspects of the program that help the user better understand how to
+use it.</li>
+<li>The interface conventions are very simple.  It doesn&#8217;t take long to
+figure out how things work.</li>
+</ul>
+
+
+<p>I wanted, as much as possible, to start writing application logic
+without having to do much work to get a working user interface.  With
+that in mind, the basic goal for Commandant is to provide a
+Bazaar-like user interface with the least effort possible.  I started
+by trying to extend Bazaar but I ran into tricky integration problems
+that made it hard to make progress, so I switched gears and started
+implementing the logic from scratch.  Reinventing the wheel got me
+further than trying to integrate, but I quickly reached a point where
+progress slowed down because I had to deal with tricky problems that
+Bazaar had already solved.  In the meantime,
+<a href="http://rbtcollins.wordpress.com/">Robert</a> landed changes in Bazaar
+that removed the integration hurdles that I&#8217;d run into.</p>
+
+<p>With the integration problems out of the way, I stopped wasting time
+reinventing the wheel, and Commandant is now a thin layer on top of
+<code>bzrlib</code> itself.  Being able to take advantage of the work that has
+been done in Bazaar has been a blessing.  There&#8217;s more that can be done
+to improve Commandant, but it is very usable in its current state.  If
+you&#8217;re interested in learning more, the
+<a href="http://bazaar.launchpad.net/~jkakar/commandant/trunk/annotate/head:/README">README</a>
+file should get you started.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2010/04/08/using-sql-functions-with-storm/">Using SQL functions with Storm</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2010-04-08T12:25:00-07:00" pubdate data-updated="true">Apr 8<span>th</span>, 2010</time>
+        
+         | <a href="/blog/2010/04/08/using-sql-functions-with-storm/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>People ask me questions about <a href="https://storm.canonical.com/">Storm</a>
+several times a week, and I&#8217;m happy to help where I can, but it would
+be better if the information our users need was easier to find.  Our
+documentation story is weak and, as a result, Storm is harder to
+discover than it ought to be.  If you do run into problems or have
+questions, please hop into <code>#storm</code> on Freenode and we&#8217;ll do our best
+to help you.  I want to improve the documentation situation, but
+finding the time to do so hasn&#8217;t happened yet.  The next best thing is
+to post some helpful hints here.</p>
+
+<p>First, some advice: if you don&#8217;t know what SQL query you want to run,
+using Storm will probably be hard.  When I get asked a question about
+writing a query using Storm I almost always respond with, &#8220;What does
+the query you want to run look like?&#8221; The querying part of Storm is
+essentially just an expression compiler that takes a list of
+expressions and converts them to SQL.  Once you know what end result
+you want, working backwards to figure out the Storm parlance is
+relatively straight forward.</p>
+
+<p>Today I was asked about using
+<a href="http://en.wikipedia.org/wiki/Null_%28SQL%29#COALESCE"><code>COALESCE</code></a>.
+The person asking the question found the
+<a href="http://people.canonical.com/~therve/storm/storm.expr.Coalesce.html"><code>storm.expr.Coalesce</code></a>
+expression but it wasn&#8217;t obvious how to use it.  He knew he wanted to
+run a query like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="k">table</span> <span class="k">WHERE</span> <span class="n">COALESCE</span><span class="p">(</span><span class="n">col1</span><span class="p">,</span> <span class="n">col2</span><span class="p">)</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>With that knowledge, figuring out how to use Storm was quite easy:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="n">store</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="k">Table</span><span class="p">,</span> <span class="n">Coalesce</span><span class="p">(</span><span class="k">Table</span><span class="p">.</span><span class="n">col1</span><span class="p">,</span> <span class="k">Table</span><span class="p">.</span><span class="n">col2</span><span class="p">)</span> <span class="o">==</span> <span class="ss">&quot;foo&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Furthermore, <code>Coalesce</code> is just a helper expression to aid usability
+and readability.  If we didn&#8217;t have a built-in <code>Coalesce</code> expression
+the query could have been written using the generic
+<a href="http://people.canonical.com/~therve/storm/storm.expr.Func.html"><code>storm.expr.Func</code></a>
+expression:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sql'><span class='line'><span class="n">store</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="k">Table</span><span class="p">,</span> <span class="n">Func</span><span class="p">(</span><span class="ss">&quot;COALESCE&quot;</span><span class="p">,</span> <span class="k">Table</span><span class="p">.</span><span class="n">col1</span><span class="p">,</span> <span class="k">Table</span><span class="p">.</span><span class="n">col2</span><span class="p">)</span> <span class="o">==</span> <span class="ss">&quot;foo&quot;</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you want to use a SQL function in a Storm query, and there is no
+built-in expression for it, you can use <code>Func</code> to call it.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/07/18/deleting-merged-branches-with-git/">Deleting merged branches with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/04/15/a-fluidinfo-concept-map/">A Fluidinfo concept map</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/12/24/an-ec2-api-concept-map/">An EC2 API concept map</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/10/03/beautiful-emacs-configuration/">Beautiful emacs configuration</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/09/27/my-work-at-canonical/">My work at Canonical</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("jkakar", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/jkakar" class="twitter-follow-button" data-show-count="false">Follow @jkakar</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Jamu Kakar -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'kakar';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

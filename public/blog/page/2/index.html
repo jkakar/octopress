@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>nerding.out()</title>
+  <meta name="author" content="Jamu Kakar">
+
+  
+  <meta name="description" content="Today I gave a talk about Storm to the
+fine folks that make up the local
+Python users group. I think the
+talk went alright. It wasn&#8217;t awesome &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://kakar.ca/blog/page/2/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="nerding.out()" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-34163989-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">nerding.out()</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:kakar.ca" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/12/02/talking-about-storm/">Talking about Storm</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-12-02T12:14:00-08:00" pubdate data-updated="true">Dec 2<span>nd</span>, 2009</time>
+        
+         | <a href="/blog/2009/12/02/talking-about-storm/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Today I gave a talk about <a href="http://storm.canonical.com/">Storm</a> to the
+fine folks that make up the local
+<a href="http://wiki.python.org/moin/VanPyZ">Python users group</a>. I think the
+talk went alright.  It wasn&#8217;t awesome but I don&#8217;t think it was
+terrible either.  It&#8217;s the third public talk I&#8217;ve given, pretty much
+ever, and so I have a lot to learn about the process.  The group is
+friendly and I felt comfortable standing up in front of everyone and
+yammering on about Storm.</p>
+
+<p>In retrospect, I should have come up with much better example code.  I
+didn&#8217;t make enough time to prepare and, due to rushing at the end, the
+topics I covered were rather basic.  I did an experiment and wrote a
+psuedo-doctest to use as slides.  The doctest and a script to run it
+are available at
+<a href="https://code.launchpad.net/~jkakar/+junk/storm-talk">lp:~jkakar/+junk/storm-talk</a>.
+I used a slightly hacked version of
+<a href="https://launchpad.net/~mwhudson">Michael Hudson-Doyle&#8217;s</a> very awesome
+<a href="http://launchpad.net/console-presenter">console-presenter</a>, which is
+available at
+<a href="https://code.launchpad.net/~jkakar/console-presenter/two-line-separator">lp:~jkakar/console-presenter/two-line-separator</a>.</p>
+
+<p>The format was great for getting me to focus on content, even though I
+didn&#8217;t have enough time to do a great job preparing it, but the slides
+were a bit lackluster being grey text on a black background.  Also, a
+common problem with doctests is that you need to keep track of the
+state of the program as you read the document.  I think this problem
+made the format awkward for the audience.  It was a good experiment,
+but in the future I&#8217;ll use traditional slides, and try to avoid a
+situation that requires the audience to keep program state in their
+head as the talk progresses.  Funny how these things seem so obvious
+in hindsight.</p>
+
+<p><a href="http://douglatornell.ca/">Doug Latornell</a> gave a nice talk about his
+experiences using <a href="http://pyyaml.org/">PyYAML</a>,
+<a href="http://stuvel.eu/projects/flickrapi">flickerapi</a> and
+<a href="http://wiki.python.org/moin/TkInter">Tkinter</a> to build an application
+that displays random photos on his living room TV, both from his
+personal collection and from his favourite groups on Flickr.  I
+enjoyed the talk and the discussion it spurred.</p>
+
+<p>All in all it was a good experience and from which I&#8217;ve learnt some
+lessons, which I can hopefully use to make the next talk better.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/11/29/storm-0-dot-16-hot-off-the-presses/">Storm 0.16 hot off the presses!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-11-29T12:01:00-08:00" pubdate data-updated="true">Nov 29<span>th</span>, 2009</time>
+        
+         | <a href="/blog/2009/11/29/storm-0-dot-16-hot-off-the-presses/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Yesterday I released version 0.16 of
+<a href="http://storm.canonical.com/">Storm</a>.  This release fixes some memory
+leaks and introduces a handful of new features.  The number of changes
+since 0.15 aren&#8217;t vast, but we&#8217;re trying to get into the habit of
+releasing regularly, so hopefully this will become a trend. The
+<a href="http://launchpad.net/storm/+milestone/0.16">release notes</a> have
+detailed information about the changes along with links to the MD5 sum
+and GPG signature for the
+<a href="http://launchpad.net/storm/trunk/0.16/+download/storm-0.16.0.tar.bz2">tarball</a>.
+I&#8217;ve also built official packages for Ubuntu users, available in the
+<a href="https://launchpad.net/~storm/+archive/ppa">Storm PPA</a>.</p>
+
+<p>Unfortunately, the <code>karmic</code> and <code>lucid</code> packages don&#8217;t work properly
+because they install files in <code>/usr/lib/python2.6/site-packages</code>,
+which is no longer included in <code>sys.path</code> by default.  In the next
+couple of days I&#8217;ll build new packages that correctly install files in
+<code>/usr/lib/python2.6/dist-packages</code>, which should fix the problem.  For
+now, adding the <code>site-packages</code> path to <code>sys.path</code> or including it in
+<code>PYTHONPATH</code> will workaround the issue.</p>
+
+<p>We&#8217;re always interested in hearing about your experiences with Storm.
+If you have comments or questions please feel free to hop into
+<code>#storm</code> on Freenode and chat us up, or post a message to the
+<a href="https://lists.canonical.com/mailman/listinfo/storm">mailing list</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2009/10/09/hello-world/">Hello, world!</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2009-10-09T10:58:00-07:00" pubdate data-updated="true">Oct 9<span>th</span>, 2009</time>
+        
+         | <a href="/blog/2009/10/09/hello-world/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For some time I&#8217;ve wanted a place to write about nerd-related things.
+This blog is the designated space for that kind of thing.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+    <a class="next" href="/">Newer &rarr;</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/07/18/deleting-merged-branches-with-git/">Deleting merged branches with Git</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/04/15/a-fluidinfo-concept-map/">A Fluidinfo concept map</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/12/24/an-ec2-api-concept-map/">An EC2 API concept map</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/10/03/beautiful-emacs-configuration/">Beautiful emacs configuration</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2010/09/27/my-work-at-canonical/">My work at Canonical</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+<section>
+  <h1>Latest Tweets</h1>
+  <ul id="tweets">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  <script type="text/javascript">
+    $.domReady(function(){
+      getTwitterFeed("jkakar", 5, false);
+    });
+  </script>
+  <script src="/javascripts/twitter.js" type="text/javascript"> </script>
+  
+    <a href="http://twitter.com/jkakar" class="twitter-follow-button" data-show-count="false">Follow @jkakar</a>
+  
+</section>
+
+
+
+
+
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Jamu Kakar -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'kakar';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

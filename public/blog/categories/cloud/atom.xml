@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: cloud | nerding.out()]]></title>
+  <link href="http://kakar.ca/blog/categories/cloud/atom.xml" rel="self"/>
+  <link href="http://kakar.ca/"/>
+  <updated>2013-01-30T17:51:42-08:00</updated>
+  <id>http://kakar.ca/</id>
+  <author>
+    <name><![CDATA[Jamu Kakar]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[An EC2 API concept map]]></title>
+    <link href="http://kakar.ca/blog/2010/12/24/an-ec2-api-concept-map/"/>
+    <updated>2010-12-24T12:25:00-08:00</updated>
+    <id>http://kakar.ca/blog/2010/12/24/an-ec2-api-concept-map</id>
+    <content type="html"><![CDATA[<p>Earlier this year I was working with Canonical's design team.  We were
+putting our heads together to develop a fantastic cloud user
+experience in Landscape.  I created a concept map to help clarify the
+various artefacts involved in the
+<a href="http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/">EC2 API</a>.
+It's not entirely complete, but it does capture the most important
+aspects of the model.  I find it useful as a high-level diagram,
+hopefully you will too.</p>
+
+<p><a href="/images/ec2-concept-map.png"><img src="/images/ec2-concept-map.png"></a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Discovering the EC2 API]]></title>
+    <link href="http://kakar.ca/blog/2010/07/05/discovering-the-ec2-api/"/>
+    <updated>2010-07-05T12:25:00-07:00</updated>
+    <id>http://kakar.ca/blog/2010/07/05/discovering-the-ec2-api</id>
+    <content type="html"><![CDATA[<p>I've been using the EC2 API quite a lot lately, while working on the
+<a href="https://landscape.canonical.com/">Landscape</a> project.  The
+<a href="http://docs.amazonwebservices.com/AWSEC2/latest/APIReference/">API documentation</a>
+is excellent, but I want to know how it behaves when things go wrong.
+What kind of failure is produced when I forget to pass a parameter?
+What happens when I pass a bogus parameter?  How does it behave when I
+pass numbered parameters that aren't in sequence, like
+<code>Name.7=foo&amp;Name.42=bar</code>? How does Amazon's implementation differ from
+<a href="http://eucalyptus.com/">Eucalyptus</a> or <a href="http://novacc.org/">Nova</a>?</p>
+
+<p>I couldn't find the answers I wanted in the documentation so I wrote a
+simple tool to invoke a method with an arbitrary set of parameters
+against an EC2 API endpoint.  After sending the request, it prints the
+HTTP status code and response to the screen.  It's called
+<code>txaws-discover</code> and is part of the
+<a href="https://launchpad.net/txaws">txAWS</a> project.  For example, to run the
+<code>DescribeRegions</code> method simply provide credentials, an endpoint, the
+method name and whatever parameters you want to pass with it:</p>
+
+<p>``` bash
+txaws-discover --key NUJOZS2V6RWQUJ3G8JUT \</p>
+
+<pre><code>--secret +Ki9Wk5Y4kudFh1EcnB3hthC9PtVU+CcfMJZ4DVl \
+--endpoint https://ec2.us-east-1.amazonaws.com \
+--action DescribeRegions \
+--RegionName.0 us-west-1
+</code></pre>
+
+<p>```</p>
+
+<p>This command produces the following output:</p>
+
+<p>``` xml
+HTTP status code: 200</p>
+
+<p><DescribeRegionsResponse xmlns="http://ec2.amazonaws.com/doc/2008-12-01/"></p>
+
+<pre><code>&lt;requestId&gt;1e9beacc-0044-4ad6-bd2c-c615351ae46d&lt;/requestId&gt;
+&lt;regionInfo&gt;
+    &lt;item&gt;
+        &lt;regionName&gt;us-west-1&lt;/regionName&gt;
+        &lt;regionEndpoint&gt;ec2.us-west-1.amazonaws.com&lt;/regionEndpoint&gt;
+    &lt;/item&gt;
+&lt;/regionInfo&gt;
+</code></pre>
+
+<p></DescribeRegionsResponse>
+```</p>
+
+<p>The credentials and API endpoint can be defined in environment
+variables to make <code>txaws-discover</code> easier to use:</p>
+
+<p><code>bash
+export AWS_ACCESS_KEY_ID=NUJOZS2V6RWQUJ3G8JUT
+export AWS_SECRET_ACCESS_KEY=+Ki9Wk5Y4kudFh1EcnB3hthC9PtVU+CcfMJZ4DVl
+export AWS_ENDPOINT=https://ec2.us-east-1.amazonaws.com
+</code></p>
+
+<p>With those defined, the command above can be shortened:</p>
+
+<p><code>
+txaws-discover --action DescribeRegions --RegionName.0 us-west-1
+</code></p>
+
+<p>It's in <a href="https://code.launchpad.net/~txaws-dev/txaws/trunk">lp:txaws</a>
+and has proven to be very helpful as a learning tool.</p>
+]]></content>
+  </entry>
+  
+</feed>

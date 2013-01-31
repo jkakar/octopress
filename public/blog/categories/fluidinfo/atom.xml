@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: fluidinfo | nerding.out()]]></title>
+  <link href="http://kakar.ca/blog/categories/fluidinfo/atom.xml" rel="self"/>
+  <link href="http://kakar.ca/"/>
+  <updated>2013-01-30T17:51:42-08:00</updated>
+  <id>http://kakar.ca/</id>
+  <author>
+    <name><![CDATA[Jamu Kakar]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A Fluidinfo concept map]]></title>
+    <link href="http://kakar.ca/blog/2012/04/15/a-fluidinfo-concept-map/"/>
+    <updated>2012-04-15T14:59:00-07:00</updated>
+    <id>http://kakar.ca/blog/2012/04/15/a-fluidinfo-concept-map</id>
+    <content type="html"><![CDATA[<p>It's been a long while since I posted and a lot has happened!  A litte
+more than a year ago I left <a href="http://canonical.com">Canonical</a> and
+joined <a href="http://fluidinfo.com/">Fluidinfo</a>.  Fluidinfo is a shared
+openly-writable metadata storage platform, often referred to as a
+social network for data.  There's a lot to say about Fluidinfo, much
+of which is already discussed on the
+<a href="http://blogs.fluidinfo.com/fluidinfo/">Fluidinfo blog</a>, and I plan to
+write more about it in the future.  When I first got involved with
+Fluidinfo I made a concept map to better understand the data model.
+I've been meaning to publish it for ages, so here it is.</p>
+
+<p><a href="/images/fluidinfo-concept-map.png"><img src="/images/fluidinfo-concept-map.png"></a></p>
+]]></content>
+  </entry>
+  
+</feed>

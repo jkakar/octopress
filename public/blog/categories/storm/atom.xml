@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: storm | nerding.out()]]></title>
+  <link href="http://kakar.ca/blog/categories/storm/atom.xml" rel="self"/>
+  <link href="http://kakar.ca/"/>
+  <updated>2013-01-30T17:51:42-08:00</updated>
+  <id>http://kakar.ca/</id>
+  <author>
+    <name><![CDATA[Jamu Kakar]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Storm 0.17 is out in the world!]]></title>
+    <link href="http://kakar.ca/blog/2010/08/06/storm-0-dot-17-is-out-in-the-world/"/>
+    <updated>2010-08-06T12:25:00-07:00</updated>
+    <id>http://kakar.ca/blog/2010/08/06/storm-0-dot-17-is-out-in-the-world</id>
+    <content type="html"><![CDATA[<p>Yesterday I released version 0.17 of
+<a href="http://storm.canonical.com/">Storm</a>.  This release fixes a
+checkpointing bug that could cause coherency issues in certain
+situations involving triggers.  It introduces a handful of new
+features and optimizations including the ability to get a
+<a href="http://people.canonical.com/~therve/storm/storm.expr.Select.html"><code>Select</code></a>
+expression from a
+<a href="http://people.canonical.com/~jkakar/storm/storm.store.ResultSet.html"><code>ResultSet</code></a>,
+which is useful when building a query with a subselect.  It also
+includes safety checks to ensure that a
+<a href="http://people.canonical.com/~therve/storm/storm.store.Store.html"><code>Store</code></a>
+is only used when database access is expected and only from the thread
+in which it was created.  The
+<a href="http://launchpad.net/storm/+milestone/0.17">release notes</a> have
+detailed information about the changes along with links to the MD5 sum
+and GPG signature for the
+<a href="http://edge.launchpad.net/storm/trunk/0.17/+download/storm-0.17.tar.bz2">tarball</a>.
+I've also built official packages for Ubuntu users, available in the
+<a href="https://launchpad.net/~storm/+archive/ppa">Storm PPA</a>.</p>
+
+<p>We're always interested in hearing about your experiences with Storm.
+If you have comments or questions please feel free to hop into
+<code>#storm</code> on Freenode and talk to us, or post a message on the
+<a href="https://lists.canonical.com/mailman/listinfo/storm">mailing list</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Object collections in Storm]]></title>
+    <link href="http://kakar.ca/blog/2010/06/13/object-collections-in-storm/"/>
+    <updated>2010-06-13T12:25:00-07:00</updated>
+    <id>http://kakar.ca/blog/2010/06/13/object-collections-in-storm</id>
+    <content type="html"><![CDATA[<p>In <a href="https://storm.canonical.com/">Storm</a>, the
+<a href="http://people.canonical.com/~therve/storm/storm.store.Store.html#find"><code>Store.find</code></a>
+method runs a query and returns matching objects.  Finding all
+accounts in the database, the equivalent of <code>SELECT * FROM account</code>,
+is simple:</p>
+
+<p><code>python
+result = store.find(Account)
+</code></p>
+
+<p>Clauses to limit the scope of the query can be passed to find.
+Finding all accounts owned by Vince Offer, the equivalent of <code>SELECT *
+FROM account WHERE owner = ‘Vince Offer'</code>, is also simple:</p>
+
+<p><code>python
+result = store.find(Account, Account.owner == "Vince Offer")
+</code></p>
+
+<p>Another way to achieve the same thing is to take the result from the
+first find operation and refine it:</p>
+
+<p><code>python
+result1 = store.find(Account)
+result2 = result1.find(Account.owner == "Vince Offer")
+</code></p>
+
+<p>Storm doesn't run a query until you do something with the result, so
+the impact on the database is exactly the same as in the previous
+example.  This is the simplest form of what
+<a href="http://code.mumak.net/">Jonathan</a> and I have been calling the
+collection pattern.  The basic idea is that you start with a
+collection of all objects, and then refine it, until you have the
+collection you want.  This pattern is possible using pure Storm, as
+shown above, but we've found it useful to implement objects that hide
+this logic and provide a more user friendly API.  For example, an
+<code>AccountCollection</code> would provide filtering logic as named methods:</p>
+
+<p>``` python
+class AccountCollection(object):</p>
+
+<pre><code>def owned_by(self, salesman):
+    """
+    Get a new collection with accounts owned by
+    salesman.
+    """
+
+def has_unpaid_invoices(self):
+    """
+    Get a new collection with accounts that have
+    unpaid invoices.
+    """
+
+def find(self):
+    """Get a result set of matching accounts."""
+</code></pre>
+
+<p>```</p>
+
+<p>Each filtering method, such as <code>owned_by</code> and <code>has_unpaid_invoices</code>
+returns a new <code>AccountCollection</code> instance.  This isn't strictly
+necessary but creating a new instance is both easier to understand and
+implement.  Finding all accounts owned by <code>Vince Offer</code> that have unpaid
+invoices is quite easy:</p>
+
+<p><code>python
+collection1 = AccountCollection()
+collection2 = collection1.owned_by("Vince Offer")
+collection3 = collection2.has_unpaid_invoices()
+result = collection3.find()
+</code></p>
+
+<p>This pattern provides several benefits:</p>
+
+<ul>
+<li><p>It names filtering options which makes them easy to understand and
+use.</p></li>
+<li><p>Query building logic is in one place which eliminates duplication.</p></li>
+<li><p>All the criteria used to build a query are available when the query
+is generated, which makes it possible to generate optimized queries.
+All users of the collection benefit from optimizations.</p></li>
+<li><p>It creates a clean separation between finding data and using it.
+This helps keep application logic more focused, because it isn't
+intermingled with the particulars of generating queries.</p></li>
+</ul>
+
+
+<p>We've used this pattern to good effect in both
+<a href="https://landscape.canonical.com/">Landscape</a> and
+<a href="https://launchpad.net/">Launchpad</a>.  In a future post I'll talk about
+some different strategies we've used to implement the pattern.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Using SQL functions with Storm]]></title>
+    <link href="http://kakar.ca/blog/2010/04/08/using-sql-functions-with-storm/"/>
+    <updated>2010-04-08T12:25:00-07:00</updated>
+    <id>http://kakar.ca/blog/2010/04/08/using-sql-functions-with-storm</id>
+    <content type="html"><![CDATA[<p>People ask me questions about <a href="https://storm.canonical.com/">Storm</a>
+several times a week, and I'm happy to help where I can, but it would
+be better if the information our users need was easier to find.  Our
+documentation story is weak and, as a result, Storm is harder to
+discover than it ought to be.  If you do run into problems or have
+questions, please hop into <code>#storm</code> on Freenode and we'll do our best
+to help you.  I want to improve the documentation situation, but
+finding the time to do so hasn't happened yet.  The next best thing is
+to post some helpful hints here.</p>
+
+<p>First, some advice: if you don't know what SQL query you want to run,
+using Storm will probably be hard.  When I get asked a question about
+writing a query using Storm I almost always respond with, "What does
+the query you want to run look like?" The querying part of Storm is
+essentially just an expression compiler that takes a list of
+expressions and converts them to SQL.  Once you know what end result
+you want, working backwards to figure out the Storm parlance is
+relatively straight forward.</p>
+
+<p>Today I was asked about using
+<a href="http://en.wikipedia.org/wiki/Null_%28SQL%29#COALESCE"><code>COALESCE</code></a>.
+The person asking the question found the
+<a href="http://people.canonical.com/~therve/storm/storm.expr.Coalesce.html"><code>storm.expr.Coalesce</code></a>
+expression but it wasn't obvious how to use it.  He knew he wanted to
+run a query like:</p>
+
+<p><code>sql
+SELECT * FROM table WHERE COALESCE(col1, col2) = 'foo'
+</code></p>
+
+<p>With that knowledge, figuring out how to use Storm was quite easy:</p>
+
+<p><code>sql
+store.find(Table, Coalesce(Table.col1, Table.col2) == "foo")
+</code></p>
+
+<p>Furthermore, <code>Coalesce</code> is just a helper expression to aid usability
+and readability.  If we didn't have a built-in <code>Coalesce</code> expression
+the query could have been written using the generic
+<a href="http://people.canonical.com/~therve/storm/storm.expr.Func.html"><code>storm.expr.Func</code></a>
+expression:</p>
+
+<p><code>sql
+store.find(Table, Func("COALESCE", Table.col1, Table.col2) == "foo")
+</code></p>
+
+<p>If you want to use a SQL function in a Storm query, and there is no
+built-in expression for it, you can use <code>Func</code> to call it.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Talking about Storm]]></title>
+    <link href="http://kakar.ca/blog/2009/12/02/talking-about-storm/"/>
+    <updated>2009-12-02T12:14:00-08:00</updated>
+    <id>http://kakar.ca/blog/2009/12/02/talking-about-storm</id>
+    <content type="html"><![CDATA[<p>Today I gave a talk about <a href="http://storm.canonical.com/">Storm</a> to the
+fine folks that make up the local
+<a href="http://wiki.python.org/moin/VanPyZ">Python users group</a>. I think the
+talk went alright.  It wasn't awesome but I don't think it was
+terrible either.  It's the third public talk I've given, pretty much
+ever, and so I have a lot to learn about the process.  The group is
+friendly and I felt comfortable standing up in front of everyone and
+yammering on about Storm.</p>
+
+<p>In retrospect, I should have come up with much better example code.  I
+didn't make enough time to prepare and, due to rushing at the end, the
+topics I covered were rather basic.  I did an experiment and wrote a
+psuedo-doctest to use as slides.  The doctest and a script to run it
+are available at
+<a href="https://code.launchpad.net/~jkakar/+junk/storm-talk">lp:~jkakar/+junk/storm-talk</a>.
+I used a slightly hacked version of
+<a href="https://launchpad.net/~mwhudson">Michael Hudson-Doyle's</a> very awesome
+<a href="http://launchpad.net/console-presenter">console-presenter</a>, which is
+available at
+<a href="https://code.launchpad.net/~jkakar/console-presenter/two-line-separator">lp:~jkakar/console-presenter/two-line-separator</a>.</p>
+
+<p>The format was great for getting me to focus on content, even though I
+didn't have enough time to do a great job preparing it, but the slides
+were a bit lackluster being grey text on a black background.  Also, a
+common problem with doctests is that you need to keep track of the
+state of the program as you read the document.  I think this problem
+made the format awkward for the audience.  It was a good experiment,
+but in the future I'll use traditional slides, and try to avoid a
+situation that requires the audience to keep program state in their
+head as the talk progresses.  Funny how these things seem so obvious
+in hindsight.</p>
+
+<p><a href="http://douglatornell.ca/">Doug Latornell</a> gave a nice talk about his
+experiences using <a href="http://pyyaml.org/">PyYAML</a>,
+<a href="http://stuvel.eu/projects/flickrapi">flickerapi</a> and
+<a href="http://wiki.python.org/moin/TkInter">Tkinter</a> to build an application
+that displays random photos on his living room TV, both from his
+personal collection and from his favourite groups on Flickr.  I
+enjoyed the talk and the discussion it spurred.</p>
+
+<p>All in all it was a good experience and from which I've learnt some
+lessons, which I can hopefully use to make the next talk better.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Storm 0.16 hot off the presses!]]></title>
+    <link href="http://kakar.ca/blog/2009/11/29/storm-0-dot-16-hot-off-the-presses/"/>
+    <updated>2009-11-29T12:01:00-08:00</updated>
+    <id>http://kakar.ca/blog/2009/11/29/storm-0-dot-16-hot-off-the-presses</id>
+    <content type="html"><![CDATA[<p>Yesterday I released version 0.16 of
+<a href="http://storm.canonical.com/">Storm</a>.  This release fixes some memory
+leaks and introduces a handful of new features.  The number of changes
+since 0.15 aren't vast, but we're trying to get into the habit of
+releasing regularly, so hopefully this will become a trend. The
+<a href="http://launchpad.net/storm/+milestone/0.16">release notes</a> have
+detailed information about the changes along with links to the MD5 sum
+and GPG signature for the
+<a href="http://launchpad.net/storm/trunk/0.16/+download/storm-0.16.0.tar.bz2">tarball</a>.
+I've also built official packages for Ubuntu users, available in the
+<a href="https://launchpad.net/~storm/+archive/ppa">Storm PPA</a>.</p>
+
+<p>Unfortunately, the <code>karmic</code> and <code>lucid</code> packages don't work properly
+because they install files in <code>/usr/lib/python2.6/site-packages</code>,
+which is no longer included in <code>sys.path</code> by default.  In the next
+couple of days I'll build new packages that correctly install files in
+<code>/usr/lib/python2.6/dist-packages</code>, which should fix the problem.  For
+now, adding the <code>site-packages</code> path to <code>sys.path</code> or including it in
+<code>PYTHONPATH</code> will workaround the issue.</p>
+
+<p>We're always interested in hearing about your experiences with Storm.
+If you have comments or questions please feel free to hop into
+<code>#storm</code> on Freenode and chat us up, or post a message to the
+<a href="https://lists.canonical.com/mailman/listinfo/storm">mailing list</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

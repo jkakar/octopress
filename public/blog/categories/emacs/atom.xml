@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: emacs | nerding.out()]]></title>
+  <link href="http://kakar.ca/blog/categories/emacs/atom.xml" rel="self"/>
+  <link href="http://kakar.ca/"/>
+  <updated>2013-01-30T17:51:42-08:00</updated>
+  <id>http://kakar.ca/</id>
+  <author>
+    <name><![CDATA[Jamu Kakar]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Beautiful emacs configuration]]></title>
+    <link href="http://kakar.ca/blog/2010/10/03/beautiful-emacs-configuration/"/>
+    <updated>2010-10-03T12:25:00-07:00</updated>
+    <id>http://kakar.ca/blog/2010/10/03/beautiful-emacs-configuration</id>
+    <content type="html"><![CDATA[<p><strong>UPDATE</strong> I've moved my emacs configuration to
+<a href="https://github.com/jkakar/emacs-configuration">GitHub</a>.</p>
+
+<p>Some time ago during a sprint, I noticed that
+<a href="https://launchpad.net/~free.ekanayaka">Free Ekanayaka</a>, one of my
+Landscape teammates, had excellent pyflakes/flymake integration that
+dramatically improved the experience of editing Python files in emacs.
+When I asked him about it he kindly offered to share his configuration
+and I was excited to pick out the flymake settings he had.  When I
+actually looked at what he'd sent me I was blown away.  He has the
+most elegant emacs configuration I've ever seen.  He uses a simple
+pattern composed of individual configuration files, each focused on a
+particular set of customizations such as appearance, interaction,
+programming, etc. that are all wired up to create the final result.
+It's very clean and avoids the blob-of-crap problem that most emacs
+configuration suffers from.</p>
+
+<p>This evening I finally took his ideas and refactored them to match my
+emacs setup.  The structure is the same, but the details are, in some
+cases, quite different.  I'm managing the configuration with Bazaar
+and have pushed it to Launchpad at
+<a href="https://code.edge.launchpad.net/~jkakar/+junk/emacs">lp:~jkakar/+junk/emacs</a>.
+Hopefully others will find this as inspiring as I have.</p>
+]]></content>
+  </entry>
+  
+</feed>
