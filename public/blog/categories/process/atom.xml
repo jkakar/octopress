@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: process | nerding.out()]]></title>
+  <link href="http://kakar.ca/blog/categories/process/atom.xml" rel="self"/>
+  <link href="http://kakar.ca/"/>
+  <updated>2013-01-30T17:59:25-08:00</updated>
+  <id>http://kakar.ca/</id>
+  <author>
+    <name><![CDATA[Jamu Kakar]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Thinking about process]]></title>
+    <link href="http://kakar.ca/blog/2012/04/18/thinking-about-process/"/>
+    <updated>2012-04-18T11:08:00-07:00</updated>
+    <id>http://kakar.ca/blog/2012/04/18/thinking-about-process</id>
+    <content type="html"><![CDATA[<p>"It's called an approach.  How you do what you do is almost as
+important as what you do because without the how you diminish the
+what."</p>
+
+<p>-Freddie Gruber</p>
+]]></content>
+  </entry>
+  
+</feed>
